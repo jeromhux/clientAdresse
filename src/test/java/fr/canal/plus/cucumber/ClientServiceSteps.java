@@ -8,8 +8,17 @@ import org.junit.Assert;
 
 public class ClientServiceSteps {
 
+    Client client;
+
     @Given("^a client with a main address active in France$")
     public void a_client_with_a_main_address_active_in_France() throws Throwable {
+        long id = 1;
+        Identity identity = new Identity("Martin", "Durand");
+        City city = new City("75000", "Paris");
+        Country country = new Country("France");
+        Address address = new Address(new Street(25, "rue du Louvre"),city,country);
+        ContactInformation contactInformation = new ContactInformation(identity,address);
+        client = new Client(id,contactInformation);
     }
 
     @When("^the advisor connected to canal changes the client address without an effective date$")
