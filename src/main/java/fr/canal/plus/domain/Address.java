@@ -13,4 +13,8 @@ public class Address {
     private Street street;
     private City city;
     private Country country;
+
+    boolean isInFrance() {
+        return "France".equals(country.getValue());
+    }
 }

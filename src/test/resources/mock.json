@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "identity": {
+    "firstName": "Martin",
+    "lastName": "Durand"
+  },
+  "address": {
+    "street": {
+      "number": 25,
+      "way": "rue de Rivoli"
+    },
+    "city": {
+      "areaCode": "75000",
+      "place": "Paris"
+    },
+    "country": {
+      "value": "France"
+    }
+  },
+  "contracts": []
+}

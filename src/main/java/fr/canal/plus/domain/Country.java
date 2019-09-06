@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Country {
 
-    private String nation;
-
+    private String value;
 }

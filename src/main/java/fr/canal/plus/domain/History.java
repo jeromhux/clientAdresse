@@ -11,11 +11,15 @@ class History {
 
     private List<Movement> movements;
 
-    public History (){
+    public History() {
         movements = new ArrayList<>();
     }
 
     public void add(Movement movement) {
         movements.add(movement);
+    }
+
+    public Movement lastMovement() {
+        return movements.get(movements.size() - 1);
     }
 }

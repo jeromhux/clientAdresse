@@ -1,4 +1,4 @@
-package fr.canal.plus.cucumber;
+package fr.canal.plus.infrastructure;
 
 import fr.canal.plus.domain.Client;
 import fr.canal.plus.domain.History;
@@ -14,13 +14,14 @@ public class ClientService {
         this.history = new History();
     }
 
-    public Client updateInformation(Client client, String canal) {
+    public Client updateInformationWithoutEffectiveDate(Client client, String canal) {
         Movement movement = new Movement(canal,"UpdateInformation", client.getId());
         history.add(movement);
         return client;
     }
 
-    public Movement lastMovement() {
-        return history.getMovements().get(0);
+    public History historyOf(){
+        return history;
     }
+
 }

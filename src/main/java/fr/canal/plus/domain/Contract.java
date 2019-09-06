@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class ContactInformation {
+public class Contract {
 
-    private Identity identity;
+    private int id;
     private Address address;
 }
