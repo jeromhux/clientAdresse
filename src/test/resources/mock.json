@@ -1,13 +1,62 @@
 {
-  "id": 1,
-  "identity": {
-    "firstName": "Martin",
-    "lastName": "Durand"
+  "client": {
+    "id": 1,
+    "identity": {
+      "firstName": "Martin",
+      "lastName": "Durand"
+    },
+    "address": {
+      "street": {
+        "number": 10,
+        "way": "rue de Rivoli"
+      },
+      "city": {
+        "areaCode": "75000",
+        "place": "Paris"
+      },
+      "country": {
+        "value": "France"
+      }
+    },
+    "contracts": [
+      {
+        "id": 1,
+        "address": {
+          "street": {
+            "number": 20,
+            "way": "rue de Rivoli"
+          },
+          "city": {
+            "areaCode": "75000",
+            "place": "Paris"
+          },
+          "country": {
+            "value": "France"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "address": {
+          "street": {
+            "number": 20,
+            "way": "rue de Rivoli"
+          },
+          "city": {
+            "areaCode": "75000",
+            "place": "Paris"
+          },
+          "country": {
+            "value": "France"
+          }
+        }
+      }
+    ]
   },
-  "address": {
+  "newAddress": {
     "street": {
-      "number": 25,
-      "way": "rue de Rivoli"
+      "number": 10,
+      "way": "rue du Louvre"
     },
     "city": {
       "areaCode": "75000",
@@ -16,6 +65,5 @@
     "country": {
       "value": "France"
     }
-  },
-  "contracts": []
+  }
 }

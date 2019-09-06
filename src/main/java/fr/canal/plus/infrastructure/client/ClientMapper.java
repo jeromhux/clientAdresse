@@ -1,7 +1,6 @@
-package fr.canal.plus.infrastructure;
+package fr.canal.plus.infrastructure.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.canal.plus.domain.Client;
 import org.apache.http.HttpResponse;
 
 import java.io.IOException;
@@ -12,12 +11,12 @@ public class ClientMapper {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static Client httpResponseToClient(HttpResponse response) throws IOException {
+    public static ClientUpdateDto httpResponseToClient(HttpResponse response) throws IOException {
         InputStream responseStream = response.getEntity().getContent();
         Scanner scanner = new Scanner(responseStream, "UTF-8");
         String responseString = scanner.useDelimiter("\\Z").next();
         scanner.close();
-        return mapper.readValue(responseString, Client.class);
+        return mapper.readValue(responseString, ClientUpdateDto.class);
     }
 
 }

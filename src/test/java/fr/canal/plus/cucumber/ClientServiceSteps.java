@@ -1,13 +1,16 @@
 package fr.canal.plus.cucumber;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import fr.canal.plus.domain.*;
-import fr.canal.plus.infrastructure.ClientController;
-import fr.canal.plus.infrastructure.ClientService;
+import fr.canal.plus.infrastructure.client.ClientController;
+import fr.canal.plus.infrastructure.client.ClientMapper;
+import fr.canal.plus.infrastructure.client.ClientService;
+import fr.canal.plus.infrastructure.client.ClientUpdateDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -22,17 +25,19 @@ import java.util.Scanner;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ClientServiceSteps {
 
     private static final String UPDATE = "/updateClient";
 
-    private ClientService clientService = new ClientService();
-    private ClientController clientController = new ClientController(clientService);
     private Client client;
     private Client updatedClient;
     private HttpResponse httpResponse;
+
+    private ClientService clientService = new ClientService();
+    private ClientController clientController = new ClientController(clientService);
     private final InputStream jsonInputStream = this.getClass().getClassLoader().getResourceAsStream("mock.json");
     private final String jsonString = new Scanner(Objects.requireNonNull(jsonInputStream), "UTF-8").useDelimiter("\\Z").next();
     private final WireMockServer wireMockServer = new WireMockServer(options().dynamicPort());
@@ -58,10 +63,13 @@ public class ClientServiceSteps {
         HttpGet request = new HttpGet("http://localhost:" + wireMockServer.port() + "/updateClient");
         request.addHeader("accept", APPLICATION_JSON);
         httpResponse = httpClient.execute(request);
+        ObjectMapper mapper = new ObjectMapper();
+        ClientUpdateDto clientDtot = new ClientUpdateDto(client,address);
+        ClientUpdateDto clientDto = ClientMapper.httpResponseToClient(httpResponse);
 
-        updatedClient = clientController.updateClient(httpResponse, canal);
+        updatedClient = clientController.updateClient(clientDto.getClient(), canal,clientDto.getNewAddress());
 
-        assertNotEquals(client, updatedClient);
+        assertNotEquals(client.getAddress(), updatedClient.getAddress());
         verify(getRequestedFor(urlEqualTo(UPDATE)).withHeader("accept", equalTo(APPLICATION_JSON)));
 
         wireMockServer.stop();
@@ -69,13 +77,19 @@ public class ClientServiceSteps {
 
     @Then("^the modified client address is recorded on all subscriber contracts$")
     public void the_modified_client_address_is_recorded_on_all_subscriber_contracts() {
-        assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+        List<Contract> contracts = updatedClient.getContracts();
+        verifiyContractsAddress(contracts);
     }
 
     @And("^an address change movement is created$")
     public void an_address_change_movement_is_created() {
         History history = clientService.historyOf();
         assertTrue(history.lastMovement().isOperation("UpdateInformation"));
+    }
+
+
+    private void verifiyContractsAddress(List<Contract> contracts) {
+        contracts.forEach(x -> x.getAddress().equals(client.getAddress()));
     }
 
     private Client aClient() {
