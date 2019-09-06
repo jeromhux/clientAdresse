@@ -15,12 +15,12 @@ public class ClientService {
     }
 
     public Client updateInformationWithoutEffectiveDate(Client client, String canal) {
-        Movement movement = new Movement(canal,"UpdateInformation", client.getId());
+        Movement movement = new Movement(canal, "UpdateInformation", client.getId());
         history.add(movement);
         return client;
     }
 
-    public History historyOf(){
+    public History historyOf() {
         return history;
     }
 

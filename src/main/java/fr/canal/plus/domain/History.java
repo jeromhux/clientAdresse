@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public
-class History {
+public class History {
 
     private List<Movement> movements;
 
@@ -20,6 +19,6 @@ class History {
     }
 
     public Movement lastMovement() {
-        return movements.get(movements.size() - 1);
+        return movements.size() != 0 ?  movements.get(movements.size() - 1) : null;
     }
 }

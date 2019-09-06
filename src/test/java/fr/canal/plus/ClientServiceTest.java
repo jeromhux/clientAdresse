@@ -2,10 +2,10 @@ package fr.canal.plus;
 
 import fr.canal.plus.domain.*;
 import fr.canal.plus.infrastructure.ClientService;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void verify_update_informations_change_contracts_address() {
+    public void verify_update_informations_change_contracts_address() throws IOException {
         ClientService clientService = new ClientService();
         Identity identity = new Identity("Martin", "Durand");
         Client newClientInformation = newClientInformation(address, identity);

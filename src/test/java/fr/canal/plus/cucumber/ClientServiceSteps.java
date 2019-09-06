@@ -1,19 +1,18 @@
 package fr.canal.plus.cucumber;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import fr.canal.plus.domain.*;
+import fr.canal.plus.infrastructure.ClientController;
 import fr.canal.plus.infrastructure.ClientService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,9 @@ import static org.junit.Assert.*;
 public class ClientServiceSteps {
 
     private static final String UPDATE = "/updateClient";
+
     private ClientService clientService = new ClientService();
+    private ClientController clientController = new ClientController(clientService);
     private Client client;
     private Client updatedClient;
     private HttpResponse httpResponse;
@@ -36,7 +37,7 @@ public class ClientServiceSteps {
     private final String jsonString = new Scanner(Objects.requireNonNull(jsonInputStream), "UTF-8").useDelimiter("\\Z").next();
     private final WireMockServer wireMockServer = new WireMockServer(options().dynamicPort());
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
-    private ObjectMapper mapper = new ObjectMapper();
+
     private Address address = aAddress(new City("75000", "Paris"), new Street(20, "rue de Rivoli"));
 
     @Given("^a client with a main address active in France$")
@@ -58,7 +59,7 @@ public class ClientServiceSteps {
         request.addHeader("accept", APPLICATION_JSON);
         httpResponse = httpClient.execute(request);
 
-        updatedClient = clientService.updateInformationWithoutEffectiveDate(convertResponseToClient(httpResponse), canal);
+        updatedClient = clientController.updateClient(httpResponse, canal);
 
         assertNotEquals(client, updatedClient);
         verify(getRequestedFor(urlEqualTo(UPDATE)).withHeader("accept", equalTo(APPLICATION_JSON)));
@@ -100,12 +101,5 @@ public class ClientServiceSteps {
         return contracts;
     }
 
-    private Client convertResponseToClient(HttpResponse response) throws IOException {
-        InputStream responseStream = response.getEntity().getContent();
-        Scanner scanner = new Scanner(responseStream, "UTF-8");
-        String responseString = scanner.useDelimiter("\\Z").next();
-        scanner.close();
-        return mapper.readValue(responseString, Client.class);
-    }
 
 }
